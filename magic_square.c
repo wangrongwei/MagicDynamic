@@ -5,12 +5,14 @@
  */
 
 #include <stdio.h>
+#include <time.h>
 
 #define MAX 15
 void magic(int n);
 
 int main(int argc,char *argv[])
 {
+	double start,stop;
 	int num=0;
 	printf("enter your magic square num:");
 	//while(1)
@@ -19,8 +21,13 @@ int main(int argc,char *argv[])
 		printf("please enter right magic num!!!\n");
 		return 0;
 	}
-	else
+	else{
+		start = clock();
 		magic(num);
+		stop = clock();
+
+	}
+	printf("\ncost about %f seconds\n",(stop-start)/1000);
 
 	return 0;
 }
