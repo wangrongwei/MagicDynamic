@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-#define MAX 15
+#define MAX 3
 #define MAX_RANK 15
 #define RANK 15
 
@@ -22,7 +22,7 @@ typedef struct{
 
 matrix_t matrix[MAX]={0};
 //NxN的矩阵操作
-matrix_t *create_nxn(int a[MAX][MAX]);
+matrix_t *create_nxn(int a[][MAX]);
 matrix_t *add_nxn(matrix_t a[],matrix_t b[]);
 matrix_t *sub_nxn(matrix_t a[],matrix_t b[]);
 matrix_t *mul_nxn(matrix_t a[],matrix_t b[]);
@@ -37,11 +37,11 @@ void search_num(int seanum);
 struct matrix_operations_t{
 	// 放在结构体里边的函数是一个指针，不用声明原型
 	// 但是要表明这是一个函数指针
-	matrix_t (*create)(int a[MAX][MAX]);
-	matrix_t (*add)(matrix_t a[],matrix_t b[]);
-	matrix_t (*sub)(matrix_t a[],matrix_t b[]);
-	matrix_t (*mul)(matrix_t a[],matrix_t b[]);
-	matrix_t (*div)(matrix_t a[],matrix_t b[]);
+	matrix_t *(*create)(int a[MAX][MAX]);
+	matrix_t *(*add)(matrix_t a[],matrix_t b[]);
+	matrix_t *(*sub)(matrix_t a[],matrix_t b[]);
+	matrix_t *(*mul)(matrix_t a[],matrix_t b[]);
+	matrix_t *(*div)(matrix_t a[],matrix_t b[]);
 	void (*read)(matrix_t src[],matrix_t dist[]);
 	void (*print)(matrix_t a[]);
 	void (*search)(int seanum);
@@ -51,8 +51,8 @@ int main(int argc,char *argv[])
 {
 	int i;
 
-	int mat[4][3] = {{3,3,3},{0,0,1},{1,1,1},{2,2,1}};
-	matrix_t mat1[MAX]={0},mat2[MAX]={0};
+	int mat[4][MAX] = {{3,3,3},{0,0,1},{1,1,1},{2,2,1}};
+	matrix_t *mat1=NULL;
 	matrix_t matrix_1[4]={0};
 	/*
 	 * 初始化operation函数
@@ -67,7 +67,7 @@ int main(int argc,char *argv[])
 		.print  = print_matrix,
 		.search = search_num
 	};
-	mat1 = matrix_operations.create(mat[3][3]);
+	mat1 = matrix_operations.create(mat);
 	matrix_operations.print(mat1);
 	matrix_operations.read(mat1,matrix_1);
 
@@ -83,13 +83,14 @@ int main(int argc,char *argv[])
 matrix_t *create_nxn(int a[][MAX])
 {
 	int i;
-	matrix_t matrix_new[MAX];
+	matrix_t matrix_new[MAX+1];
+	matrix_t *matrix_point = matrix_new;
 	for(i=0;i<4;i++){
 		matrix_new[i].row = a[i][0];
 		matrix_new[i].col = a[i][1];
 		matrix_new[i].value = a[i][2];
 	}
-	return matrix_new;
+	return matrix_point;
 }
 /*
  * 三元组的矩阵形式
@@ -165,7 +166,7 @@ matrix_t *div_nxn(matrix_t a[],matrix_t b[])
 void read_matrix(matrix_t src[],matrix_t dist[])
 {
 	int i;
-	for(i=0;i<3;i++){
+	for(i=0;i<4;i++){
 		dist[i].row = src[i].row;
 		dist[i].col = src[i].col;
 		dist[i].value = src[i].value;
@@ -176,7 +177,7 @@ void read_matrix(matrix_t src[],matrix_t dist[])
 void print_matrix(matrix_t a[])
 {
 	int i,j;
-	for(i=0;i<3;i++){
+	for(i=0;i<4;i++){
 		printf("%2d,%2d,%2d\n",a[i].row,a[i].col,a[i].value);
 
 	}
