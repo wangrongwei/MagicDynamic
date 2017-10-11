@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 
+// 构建最大的矩阵大小为15*15
 #define MAX 15
 #define MAX_RANK 15
 #define RANK 15
@@ -52,10 +53,15 @@ int main(int argc,char *argv[])
 {
 	int i;
 
-	int mat[4][MAX] = {{3,3,3},{0,0,1},{1,1,1},{2,2,1}};
-	matrix_t *mat1=NULL;
-	matrix_t matrix_1[4]={0};
-	matrix_t matrix_new[MAX]={0};
+	int mat1_1[MAX][MAX] = {{3,3,4},{0,0,1},{1,1,1},{2,0,1},{2,2,1}};
+	int mat1_2[MAX][MAX] = {{3,3,3},{0,1,1},{1,1,1},{2,2,1}};
+	//matrix_t *mat1=NULL;
+	matrix_t *mat1 = NULL;
+	matrix_t *mat2 = NULL;
+	matrix_t matrix_one[MAX]={0};
+	matrix_t matrix_two[MAX]={0};
+
+
 	matrix_t *retmat=NULL;
 
 	/*
@@ -73,17 +79,14 @@ int main(int argc,char *argv[])
 	};
 	// printf()
 	// mat1 和 matrix_new是同一个
-	mat1 = matrix_operations.create(mat,matrix_new);
-
+	mat1 = matrix_operations.create(mat1_1,matrix_one);
+	mat2 = matrix_operations.create(mat1_2,matrix_two);
+	printf("one matrix is:\n");
 	matrix_operations.print(mat1);
-	printf("address: matrix_new 0x%8x\n",matrix_new);
-	printf("address: mat1       0x%8x\n",mat1);
 
-	matrix_operations.read(mat1,matrix_1);
-
-	printf("\nmatrix_1:\n");
-	matrix_operations.print(matrix_1);
-	retmat = matrix_operations.add(mat1,matrix_1);
+	printf("\ntwo matrix:\n");
+	matrix_operations.print(mat2);
+	retmat = matrix_operations.mul(mat1,mat2);
 	printf("the result is:\n");
 	matrix_operations.print(retmat);
 
@@ -100,7 +103,7 @@ matrix_t *create_nxn(int a[][MAX],matrix_t matrix_new[])
 	int i;
 	//matrix_t matrix_new[MAX+1];
 	//matrix_t *matrix_point = matrix_new;
-	for(i=0;i<4;i++){
+	for(i=0;i<=a[0][2];i++){
 		matrix_new[i].row = a[i][0];
 		matrix_new[i].col = a[i][1];
 		matrix_new[i].value = a[i][2];
@@ -169,6 +172,10 @@ matrix_t *sub_nxn(matrix_t a[],matrix_t b[])
 		// 从两部分开始相加
 		for(i=1;i<=a[0].value;i++){
 			matrix_one[a[i].row][a[i].col] = a[i].value;
+			// 后边需要把结果存到a[]里边，所以需要将a[]清空
+			a[i].row = 0;
+			a[i].col = 0;
+			a[i].value = 0;
 
 		}
 		for(i=1;i<=b[0].value;i++){
@@ -189,8 +196,8 @@ matrix_t *sub_nxn(matrix_t a[],matrix_t b[])
 			}
 		}
 		// 记录矩阵的阶和非零项个数
-		//retmat[0].row = a[0].row;
-		//retmat[0].col = a[0].col;
+		// retmat[0].row = a[0].row;
+		// retmat[0].col = a[0].col;
 		a[0].value = k-1;
 	}
 	else{
@@ -203,11 +210,39 @@ matrix_t *sub_nxn(matrix_t a[],matrix_t b[])
 	return a;
 
 }
-
+/*
+ * 使用稀疏矩阵的三元表的形式实现乘法
+ */
 matrix_t *mul_nxn(matrix_t a[],matrix_t b[])
 {
-	//matrix_t matrix[MAX]={0};
-	return matrix;
+	// c = a*b;
+	matrix_t c[MAX]={0};
+	int i,j,k=1;
+	for(i=1;i<=a[0].value;i++){
+		for(j=1;j<=b[0].value;j++){
+			if(a[i].col == b[j].row){
+				c[k].row = a[i].row;
+				c[k].col = b[j].col;
+				c[k].value = a[i].value * b[j].value;
+				k++;
+			}
+			else{
+				continue;
+			}
+
+		}
+		j = 1;
+	}
+	c[0].row = a[0].row;
+	c[0].col = b[0].col;
+	c[0].value = k-1;
+	// 不习惯将c[]定义为全局变量，所以需要将C[]复制给a
+	for(i=0;i<=c[0].value+1;i++){
+		a[i].row = c[i].row;
+		a[i].col = c[i].col;
+		a[i].value = c[i].value;
+	}
+	return a;
 
 }
 
@@ -232,7 +267,7 @@ void read_matrix(matrix_t src[],matrix_t dist[])
 void print_matrix(matrix_t a[])
 {
 	int i=0;
-	for(i=0;i<4;i++){
+	for(i=0;i<=a[0].value;i++){
 		printf("%2d,%2d,%2d\n",a[i].row,a[i].col,a[i].value);
 
 	}
