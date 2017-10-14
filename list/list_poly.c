@@ -52,14 +52,10 @@ void add(list_point *front,list_point *rear,float coef,int expon)
 	if(*front){
 		(*rear)->link = new;
 		*rear = new;
-		//printf("coef = %3.1f,expon = %3d",(*rear)->coef,(*rear)->expon);
-		//printf("\n");
-
 	}
 	else{
 		*front = new;
 		*rear = new;
-		//printf("front2 = %d\n",*front);
 
 	}
 
