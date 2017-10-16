@@ -38,7 +38,9 @@ int main(int argc,char *argv[])
 	origin1->left_node->left_node = origin2;
 	origin1->left_node->right_node = origin3;
 
-	preorder(origin);
+	inorder(origin);
+	printf("\n");
+	postorder(origin);
 
 	return 0;
 
@@ -79,7 +81,31 @@ void preorder(tree_point origin)
 
 }
 
+/*
+ * 中序遍历打印origin树的遍历结果
+ */
+void inorder(tree_point origin)
+{
+	if(origin){
+		inorder(origin->left_node);
+		printf("%d ",origin->value);
+		inorder(origin->right_node);
+	}
+	return ;
 
+}
+/*
+ * 后序遍历
+ */
+void postorder(tree_point origin)
+{
+	if(origin){
+		postorder(origin->left_node);
+		postorder(origin->right_node);
+		printf("%d ",origin->value);
+	}
+	return ;
+}
 /*
  * 从origin中复制整个tree，然后返回根节点
  * 复制方式与后序遍历顺序一样
