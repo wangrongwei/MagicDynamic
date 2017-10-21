@@ -54,7 +54,7 @@ void insertion_sort(element list[],int n)
 void bininsertion_sort(element list[],int n)
 {
 	int left,right,mod;
-	int i,j;
+	int i,j,k=0;
 	//left = 0;
 	//right = 1;
 	element next;
@@ -70,18 +70,14 @@ void bininsertion_sort(element list[],int n)
 			else{
 				left = mod;
 			}
+			//printf("%d\n",k++);
 
-			if( right == left || right == left + 1){
-				break;
-				//printf("2\n");
-			}
-			//printf("1\n");
-
-		}while(1);
-		for(j=i;j>mod;j--){
+		}while(!(right == left || right == left + 1));
+		//if(mod == right)
+		for(j=i;j>right;j--){
 			list[j] = list[j-1];
 		}
-		list[mod].key = next.key;
+		list[right].key = next.key;
 	}
 }
 #else
