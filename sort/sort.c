@@ -2,7 +2,7 @@
  * 各种排序练习
  */
 #include <stdio.h>
-#define MAX 100
+#define MAX 20
 #define MOD
 //#undef MOD
 
@@ -12,18 +12,22 @@ typedef struct element{
 	int key;
 }element;
 
-element ele[MAX]={1,0,5,7,2,12,23,54,78,9,10};
-
+element ele[MAX] = {1,0,5,7,2,12,23,54,78,9,10};
+element list[MAX] = {1,3,5,9,11,2,4,6,18,20};
+element sorted[MAX] = {0};
 void insertion_sort(element list[],int n);
 void bininsertion_sort(element list[],int n);
 void quicksort(element list[],int left,int right);
+void merge(element list[],element sorted[],int i,int j,int n);
+
 
 int main(int argc,char *argv)
 {
 	int i;
-	quicksort(ele,0,10);
-	for(i=0;i<11;i++){
-		printf("%3d",ele[i].key);
+	//quicksort(ele,0,10);
+	merge(list,sorted,0,5,9);
+	for(i=0;i<10;i++){
+		printf("%3d",sorted[i].key);
 	}
 
 	return 0;
@@ -116,6 +120,42 @@ void quicksort(element list[],int left,int right)
 		quicksort(list,i+1,right);
 	}
 }
+
+/*
+ * 归并排序:sort为排好序的数组
+ *	i:list里边第一个数组开始下标
+ *	j:list里边第二个数组开始下标
+ *	n:第二个数组结束的下标
+ */
+void merge(element list[],element sorted[],int i,int j,int n)
+{
+	int m = 0;
+	int k = j; // 代表第一个数组的上限
+	while(i < k && j <= n){
+		if(list[i].key < list[j].key){
+			sorted[m++].key = list[i++].key;
+			//i++;
+		}
+		else{
+			sorted[m++].key = list[j++].key;
+			//j++;
+		}
+	}
+	// 存在一种可能，有一个数组有余下的
+	if(i < k){
+		while(i < k){
+			sorted[m++].key = list[i++].key;
+		}
+	}
+	else{
+		while(j <= n){
+			sorted[m++].key = list[j++].key;
+		}
+	}
+
+}
+
+
 
 #else
 /*
