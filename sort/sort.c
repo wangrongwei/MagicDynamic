@@ -6,19 +6,22 @@
 #define MOD
 //#undef MOD
 
+#define SWAP(i,j,k) (k=i,i=j,j=k)
+
 typedef struct element{
 	int key;
 }element;
 
-element ele[MAX]={1,3,5,7,2,12,23,54,78,9,10};
+element ele[MAX]={1,0,5,7,2,12,23,54,78,9,10};
 
 void insertion_sort(element list[],int n);
 void bininsertion_sort(element list[],int n);
+void quicksort(element list[],int left,int right);
 
 int main(int argc,char *argv)
 {
 	int i;
-	bininsertion_sort(ele,11);
+	quicksort(ele,0,10);
 	for(i=0;i<11;i++){
 		printf("%3d",ele[i].key);
 	}
@@ -80,6 +83,40 @@ void bininsertion_sort(element list[],int n)
 		list[right].key = next.key;
 	}
 }
+
+/*
+ * 快速排序（不稳定的排序）
+ */
+void quicksort(element list[],int left,int right)
+{
+	int i,j,pivot;
+	int temp;
+	//int left,right;
+	//left = 0,right = n-1;
+	//pivot = list[left].key;
+	if(left < right){
+		i = left;
+		j = right + 1;
+		pivot = list[left].key;
+		do{
+			//pivot = list[left];
+			do{
+				i++;
+			}while(list[i].key < pivot);
+			do{
+				j--;
+			}while(list[j].key > pivot);
+			if(i < j)
+				SWAP(list[i].key,list[j].key,temp);
+			else
+				SWAP(list[j].key,list[left].key,temp);
+		}while(i < j);
+		//SWAP();
+		quicksort(list,left,j-1);
+		quicksort(list,i+1,right);
+	}
+}
+
 #else
 /*
  * 直接插入排序（从大到小）
